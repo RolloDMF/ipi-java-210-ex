@@ -2,14 +2,42 @@ package com.ipiecoles.java.java210;
 
 public class Sudoku {
 
+	public static final String FIN_SAISIE = "FIN";
+	
+	public boolean resolu = false;
+	
+	public short sudokuAResoudre[][];
+
+	
+	public short[][] getSudokuAResoudre() {
+		return this.sudokuAResoudre;
+	}
+	
+	public void setSudokuAResoudre(short tab[][]) {
+		this.sudokuAResoudre = tab;
+	}
+	
+	
+	
 	/**
 	 * Constructeur par défaut
 	 */
 	public Sudoku() {
+		this.sudokuAResoudre = new short[9][9];
 	}
 
 	public static boolean ligneSaisieEstCoherente(String ligneSaisie) {
-		return true;
+		if (ligneSaisie.equals("    ") || ligneSaisie == null || ligneSaisie.equals("")) {
+			System.out.println( "Les coordonnées du chiffre et/ou sa valeur ne peuvent pas être nulles, vides ou remplies avec des espaces");
+			return false;
+		}else if (ligneSaisie.length() != 3) {
+			System.out.println("Les coordonnées du chiffre et/ou sa valeur doit faire 3 caractères");
+			return false;
+		}else if (ligneSaisie[0] == ) {
+			
+		}else {
+			return true;
+		}
 	}
 	
 	/**
