@@ -33,7 +33,7 @@ public class Sudoku {
 		}else if (ligneSaisie.length() != 3) {
 			System.out.println("Les coordonnées du chiffre et/ou sa valeur doit faire 3 caractères");
 			return false;
-		}else if (ligneSaisie[0] == ) {
+		}else if (ligneSaisie[0] ==  ) {
 			
 		}else {
 			return true;
