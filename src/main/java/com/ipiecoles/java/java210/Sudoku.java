@@ -17,8 +17,6 @@ public class Sudoku {
 		this.sudokuAResoudre = tab;
 	}
 	
-	
-	
 	/**
 	 * Constructeur par défaut
 	 */
@@ -27,14 +25,15 @@ public class Sudoku {
 	}
 
 	public static boolean ligneSaisieEstCoherente(String ligneSaisie) {
-		if (ligneSaisie.equals("    ") || ligneSaisie == null || ligneSaisie.equals("")) {
+		if (ligneSaisie == ("    ") || ligneSaisie == null || ligneSaisie == ("")) {
 			System.out.println( "Les coordonnées du chiffre et/ou sa valeur ne peuvent pas être nulles, vides ou remplies avec des espaces");
 			return false;
 		}else if (ligneSaisie.length() != 3) {
 			System.out.println("Les coordonnées du chiffre et/ou sa valeur doit faire 3 caractères");
 			return false;
-		}else if (ligneSaisie[0] ==  ) {
-			
+		}else if (!(ligneSaisie.substring(0,1).matches("[0-8]") && ligneSaisie.substring(1,2).matches("[0-8]") && ligneSaisie.substring(2).matches("[1-9]"))) {
+			System.out.println("L'abscisse et l'ordonnée doivent être compris entre 0 et 8, la valeur entre 1 et 9");
+			return false;
 		}else {
 			return true;
 		}
