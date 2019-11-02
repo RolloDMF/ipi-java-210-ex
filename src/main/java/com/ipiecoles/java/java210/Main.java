@@ -19,7 +19,7 @@ public class Main {
 	 public static void main(String[] args) {
 		 	Sudoku sudoku = new Sudoku();
 		 	short[][] caseTrie;
-		 	caseTrie = sudoku.trieDesCases(tab);
+		 	caseTrie = Sudoku.trieDesCases(tab);
 		 	
 		 	for (int i = 0; i < caseTrie.length; i++) {
 				System.out.println("ordre " + caseTrie[i]);
