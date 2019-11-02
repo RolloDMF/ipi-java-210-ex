@@ -21,8 +21,6 @@ public class Main {
 		 	short[][] caseTrie;
 		 	caseTrie = sudoku.trieDesCases(tab);
 		 	
-		 	System.out.println("coucou");
-		 	
 		 	for (int i = 0; i < caseTrie.length; i++) {
 				System.out.println("ordre " + caseTrie[i]);
 				for (int j = 0; j < caseTrie[i].length; j++) {
