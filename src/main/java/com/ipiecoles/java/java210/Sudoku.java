@@ -1,15 +1,6 @@
 package com.ipiecoles.java.java210;
 
-import java.io.PrintStream;
-import java.lang.reflect.Array;
-import java.security.PublicKey;
 import java.util.Scanner;
-import java.util.Arrays;
-
-import javax.lang.model.element.NestingKind;
-import javax.management.loading.PrivateClassLoader;
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
-import javax.swing.text.TabableView;
 
 public class Sudoku {
 
@@ -406,29 +397,26 @@ public class Sudoku {
 		short[] suivant = new short[12];
 		int count = 0;
 		
-		while (count == caseTrieNuméroté.length) {
+		while (count < caseTrieNuméroté.length) {
 			for (int i = 0; i < (caseTrieNuméroté.length - 1); i++) {
 				
-				if (caseTrieNuméroté[i][12] < caseTrieNuméroté[i+1][12]) {
+				if (caseTrieNuméroté[i][11] > caseTrieNuméroté[i+1][11]) {
 					
 					suivant = caseTrieNuméroté[i+1];
 					
 					caseTrieNuméroté[i+1] = caseTrieNuméroté[i];
 					caseTrieNuméroté[i] = suivant; 
 					
-					System.out.println(caseTrieNuméroté[i+1]);
-					System.out.println(suivant);
-					
 					count = 0;
 				}else {
-					count = 1;
+					count++;
 				}
 			}	
 		}
 		return caseTrieNuméroté;
 	}
 	
-	public boolean testRollo(short[][] sudoku) {
+	public boolean testRollo(short abscisse, short ordonnee, short[][] sudoku) {
 		short[] chiffre = {1,2,3,4,5,6,7,8,9};
 		
 		for ( abscisse = 0; abscisse < sudoku.length; abscisse++) {
