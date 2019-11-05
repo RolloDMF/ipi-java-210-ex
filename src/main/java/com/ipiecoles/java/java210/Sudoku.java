@@ -3,6 +3,8 @@ package com.ipiecoles.java.java210;
 import java.net.PasswordAuthentication;
 import java.util.Scanner;
 
+import javax.swing.text.AbstractDocument.LeafElement;
+
 public class Sudoku {
 
 	public static final String FIN_SAISIE = "FIN";
@@ -73,10 +75,20 @@ public class Sudoku {
 		Scanner scanner = new Scanner(System.in);
 		ligneSaisie = scanner.nextLine();
 
-		while (!ligneSaisie.equalsIgnoreCase(FIN_SAISIE)) {
+		while (!ligneSaisie.equalsIgnoreCase(FIN_SAISIE) && tableau[80] == null) {
 
 			if (Sudoku.ligneSaisieEstCoherente(ligneSaisie)) {
-
+				
+				for (int i = 0; i < tableau.length; i++) {
+					
+					if (tableau[i] != null) {
+						if (Integer.parseInt(ligneSaisie.substring(0, 2)) == Integer.parseInt(tableau[i].substring(0, 2))) {
+							System.out.println("Cette case est deja remplie !");
+							continue;
+						}
+					}
+				}
+				
 				tableau[index] = ligneSaisie;
 
 				index++;
@@ -126,17 +138,26 @@ public class Sudoku {
 	}
 
 	/**
-	 * Cette méthode affiche un sudoku de manière formatée sur la console. Cela doit
-	 * ressembler exactement à : ----------------------- | 8 | 4 2 | 6 | | 3 4 | | 9
-	 * 1 | | 9 6 | | 8 4 | ----------------------- | | 2 1 6 | | | | | | | | 3 5 7 |
-	 * | ----------------------- | 8 4 | | 7 5 | | 2 6 | | 1 3 | | 9 | 7 1 | 4 |
-	 * -----------------------
-	 * 
-	 * @param sudoku tableau de short représentant les valeurs d'un sudoku (résolu
-	 *               ou non). Ce tableau fait 9 par 9 et contient des chiffres de 0
-	 *               à 9, 0 correspondant à une valeur non trouvée (dans ce cas, le
-	 *               programme affiche un blanc à la place de 0
-	 */
+     * Cette méthode affiche un sudoku de manière formatée sur la console.
+     * Cela doit ressembler exactement à :
+     * -----------------------
+     * |   8   | 4   2 |   6   |
+     * |   3 4 |       | 9 1   |
+     * | 9 6   |       |   8 4 |
+     *  -----------------------
+     * |       | 2 1 6 |       |
+     * |       |       |       |
+     * |       | 3 5 7 |       |
+     *  -----------------------
+     * | 8 4   |       |   7 5 |
+     * |   2 6 |       | 1 3   |
+     * |   9   | 7   1 |   4   |
+     *  -----------------------
+     * 
+     * @param sudoku tableau de short représentant les valeurs d'un sudoku (résolu ou non). 
+     * Ce tableau fait 9 par 9 et contient des chiffres de 0 à 9, 0 correspondant à une valeur 
+     * non trouvée (dans ce cas, le programme affiche un blanc à la place de 0
+     */
 	public void ecrireSudoku(short[][] sudoku) {
 
 		String affichageLigne = " " + "-----------------------\n";
@@ -169,6 +190,21 @@ public class Sudoku {
 		System.out.println(affichageLigne);
 	}
 
+	public static boolean validationSudoku(short[][] sudoku) {
+		
+		for (int i = 0; i < sudoku.length; i++) {
+			for (int j = 0; j < sudoku.length; j++) {
+				if (sudoku[i][j] != 0) {
+					if (!Sudoku.estAutoriseSudoku(i, j, sudoku[i][j], sudoku)) {
+						System.out.println("le sodoku est invalide");
+						return false;
+					}
+				}
+			}
+		}
+		System.out.println("le sudoku est valide");
+		return true;
+	}
 	/**
 	 * Cette méthode vérifie si un chiffre est autorisé à la position d'abscisse et
 	 * d'ordonnée donnés dans le sudoku en appliquant les règles suivantes :
@@ -233,14 +269,74 @@ public class Sudoku {
 		return true;
 	}
 
-	public boolean resoudre(int abscisse, int ordonnee, short[][] sudoku) {
+	public static boolean estAutoriseSudoku(int abscisse, int ordonnee, short chiffre, short[][] sudoku) {
 
+		int abscisseBlock;
+		int ordonneeBlock;
+		int indexOrdonneeBlock;
+		
+		int compteurLigne = 0;
+		int compteurColone = 0;
+		int compteurBlock = 0;
+
+		for (int i = 0; i < sudoku.length; i++) {
+			
+			if (sudoku[i][ordonnee] == chiffre) {
+				compteurLigne++;
+			}
+
+			if (sudoku[abscisse][i] == chiffre) {
+				compteurColone++;
+			}
+			
+			if (compteurColone >= 2 || compteurLigne >= 2) {
+				return false;
+			}
+		}
+
+		if (abscisse <= 2) {
+			abscisseBlock = 0;
+		} else if (abscisse <= 5) {
+			abscisseBlock = 3;
+		} else {
+			abscisseBlock = 6;
+		}
+
+		if (ordonnee <= 2) {
+			ordonneeBlock = 0;
+		} else if (ordonnee <= 5) {
+			ordonneeBlock = 3;
+		} else {
+			ordonneeBlock = 6;
+		}
+
+		indexOrdonneeBlock = ordonneeBlock;
+
+		for (int i = 0; i < 3; i++) {
+
+			for (int j = 0; j < 3; j++) {
+					
+				if (sudoku[abscisseBlock][indexOrdonneeBlock] == chiffre) {
+					compteurBlock++;
+				}
+				indexOrdonneeBlock++;
+				
+			}
+			indexOrdonneeBlock = ordonneeBlock; // reset de la position des ordonnéé
+			abscisseBlock++;
+		}
+		
+		if (compteurBlock >= 2) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean resoudre(int abscisse, int ordonnee, short[][] sudoku) {
 		short[][] caseTrie;
 		caseTrie = Sudoku.trieDesCases(sudoku);
 
 		short[][] modification = new short[caseTrie.length][3];
-
-		Sudoku monSudoku = new Sudoku();
 
 		short compteur = 0;
 
@@ -253,7 +349,6 @@ public class Sudoku {
 			for (short j = 2; j < (nombrePosibilite + 2); j++) {
 
 				compteur++;
-				System.out.println("conteur " + compteur);
 
 				if (Sudoku.estAutorise(absci, ordo, caseTrie[i][j], sudoku)) {
 
@@ -263,16 +358,12 @@ public class Sudoku {
 					modification[i][1] = ordo;
 					modification[i][2] = j;
 
-					System.out.println("normal " + absci + " " + ordo + " " + caseTrie[i][j] + " index " + i + " nombre de possibilité  " + nombrePosibilite);
-					monSudoku.ecrireSudoku(sudoku);
-
 					compteur = 0;
 					break;
 
 				}
 
 				if (compteur >= nombrePosibilite) {
-					System.out.println("echeque sur  " + absci + " " + ordo + " " + caseTrie[i][j] + " index " + i);
 					
 					boolean trouve = false;
 					int copieIndexModification = i;
@@ -280,8 +371,6 @@ public class Sudoku {
 					while ((!trouve) && copieIndexModification != 0) {
 
 						copieIndexModification--;
-						
-						System.out.println("index " + copieIndexModification);
 
 						short valeurModif = modification[copieIndexModification][2];
 						short abscisseModif = modification[copieIndexModification][0];
@@ -299,27 +388,19 @@ public class Sudoku {
 
 								trouve = true;
 								compteur = 0;
-								i--;
-
-								System.out.println("modif sur " + abscisseModif + " " + ordonneeModif + " "+ caseTrie[copieIndexModification][k]);
-
-								monSudoku.ecrireSudoku(sudoku);
+								i = (short) copieIndexModification;
 
 								break;
 
 							} else if (k > tableauPossible[11]) {
 								
-								System.out.println("MEEEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRDDDDDDDDDDDDDDDDDDDEEEEEEEEEEEEEEEEEEE");
-								System.out.println("echeque modif sur absice et ordonée" + abscisseModif + " " + ordonneeModif);
+								sudoku[abscisseModif][ordonneeModif] = 0;
+								modification[copieIndexModification][2] = 2;
 								
 								if (copieIndexModification == 0) {
 									compteur = 0;
-									//copieIndexModification = i;
 								}								
 							}
-							
-							modification[copieIndexModification][2] = 2;
-							System.out.println("pas de modif sur " + abscisseModif + " " + ordonneeModif + " k = " + k + " et nombre possible =  " + nombrePossible);
 						}
 					}
 				}
@@ -417,29 +498,4 @@ public class Sudoku {
 		return caseTrieNuméroté;
 	}
 	
-	/*
-	 * public static void name() { boolean continuer = true; int[][] sudoku; //qu'on
-	 * suppose déja initialisé
-	 * 
-	 * while(continuer) //tant qu'on a trouvé un chiffre, on recommencer à chercher,
-	 * sinon on s'arrête { continuer=false; for(int i=0;i<9;i++) //ici le test sur
-	 * les lignes et les colonnes { int nbCaseVideColonne=0; int nbCaseVideRangee=0;
-	 * int valeurTotaleColonne=0; int valeurTotaleRangee=0; int valeurColonne=0; int
-	 * valeurRangee=0; for(int j=0;j<9;j++) { if(sudoku[i][j]==0) {
-	 * nbCaseVideColonne++; valeurColonne=j; } if(sudoku[j][i]==0) {
-	 * nbCaseVideRangee++; valeurRangee++; } valeurTotaleColonne+=sudoku[i][j];
-	 * valeurTotaleRangee+=sudoku[j][i]; } if(nbCaseVideColonne==1) //une seule case
-	 * vide dans la colonne { continuer=true;
-	 * sudoku[i][valeurColonne]=45-valeurTotaleColonne; //45: somme d'une ligne
-	 * complete } if(nbCaseVideRangee==1) //une seule case vide dans la rangée {
-	 * continuer=true; sudoku[valeurRangee][i]=45-valeurTotaleRangee; } } for(int
-	 * i=0;i<3;i++) //ici le test sur les carrés (grand carré colonne) { for(int
-	 * j=0;j<3;j++) //grand carré rangée { int nbCaseVide=0; int valeurTotale=0; int
-	 * valeurColonne=0; int valeurrangee=0; for(int k=0;k<3;k++) //case dans un
-	 * carré { for(int l=0;l<3;l++} //case vesticale dans un carré {
-	 * if(sudoku[3*i+k][3*j+l]==0) { nbCaseVide++; valeurColonne=3*i+k;
-	 * valeurRangee=3*j+l; } valeurTotale+=sudoku[3*i+k][3*j+l]; } }
-	 * if(nbCaseVide==1) //une seule case vide dans le carré { continuer=true;
-	 * sudoku[valeurColonne][valeurRangee]=45-valeurTotaleColonne; } } } } }
-	 */
 }

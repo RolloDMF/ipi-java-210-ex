@@ -17,15 +17,18 @@ public class Main {
 		};
 	
 	 public static void main(String[] args) {
-		 	Sudoku sudoku = new Sudoku();
-		 	short[][] caseTrie;
-		 	caseTrie = Sudoku.trieDesCases(tab);
+		 	Sudoku monSudoku = new Sudoku();
 		 	
-		 	for (int i = 0; i < caseTrie.length; i++) {
-				System.out.println("ordre " + caseTrie[i]);
-				for (int j = 0; j < caseTrie[i].length; j++) {
-					System.out.println("rest " + caseTrie[i][j]);
-				}
+		 	//monSudoku.remplitSudokuATrous(Sudoku.demandeCoordonneesSudoku());
+		 	monSudoku.setSudokuAResoudre(tab);
+		 	Sudoku.validationSudoku(monSudoku.sudokuAResoudre);
+		 	
+		 	monSudoku.ecrireSudoku(monSudoku.sudokuAResoudre);
+		 	
+		 	monSudoku.resolu = monSudoku.resoudre(0, 0, monSudoku.sudokuAResoudre);
+		 	
+		 	if (monSudoku.resolu) {
+				monSudoku.ecrireSudoku(monSudoku.sudokuAResoudre);
 			}
 		 }
 	 
